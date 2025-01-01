@@ -4,4 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# Actix 웹 프레임워크 및 런타임
 actix-web = "4"
+actix-rt = "2.10.0"
+
+# Data 직렬화 라이브러리
+serde = {version = "1.0.217", features = ["derive"]}
+# 시간 관련 유틸리티
+chrono = {version = "0.4.39", features = ["serde"]}
