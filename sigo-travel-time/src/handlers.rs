@@ -4,6 +4,7 @@
 use super::models::TMAPtransitAPIInput;
 use super::state::AppState;
 use actix_web::{web, HttpResponse};
+use serde_json::Value;
 // use chrono::Utc; // 등록 시간.
 
 // 대중교통을 이용했을 때 걸리는 시간을 받아오는 기능
@@ -12,7 +13,44 @@ pub async fn get_travel_time_by_transit(
     api_input_info: web::Json<TMAPtransitAPIInput>,
     app_state: web::Data<AppState>,
 ) -> HttpResponse {
-    // TMAP 대중교통 API call
-    // api_input_info 속 데이터 활용
-    HttpResponse::Ok().json("Added course")
+    let http_client = &app_state.http_client;
+    let tmap_api_endpoint = "https://apis.openapi.sk.com/transit/routes";
+
+    let request_body = serde_json::json!({
+        "startX": api_input_info.start_x,
+        "startY": api_input_info.start_y,
+        "endX": api_input_info.end_x,
+        "endY": api_input_info.end_y,
+        "count" : 1,
+        "lang": 0,
+        "format":"json"
+    });
+
+    match http_client
+        .post(tmap_api_endpoint)
+        .header("content-type", "application/json")
+        .header("appKey", "환경변수 크레이트 추가하기")
+        .header("accept", "application/json")
+        .json(&request_body)
+        .send()
+        .await
+    {
+        Ok(response) => {
+            if response.status().is_success() {
+                // 응답을 JSON으로 변환
+                match response.json::<Value>().await {
+                    Ok(json_response) => HttpResponse::Ok().json(json_response),
+                    Err(_) => HttpResponse::InternalServerError().body("Failed to parse response"),
+                }
+            } else {
+                // TMAP API가 실패 상태 코드를 반환
+                HttpResponse::BadRequest().body("Failed to fetch travel time from TMAP API")
+            }
+        }
+        Err(_) => HttpResponse::InternalServerError().body("Failed to connect to TMAP API"),
+    }
+}
+
+pub async fn test_handler() -> HttpResponse {
+    HttpResponse::Ok().body("Test handler called")
 }
