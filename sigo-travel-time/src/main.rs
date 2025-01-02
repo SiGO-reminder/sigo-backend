@@ -1,28 +1,30 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpServer};
+use std::sync::Mutex;
 
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
-}
+#[path = "handlers.rs"]
+mod handlers;
+#[path = "models.rs"]
+mod models;
+#[path = "routes.rs"]
+mod routes;
+#[path = "state.rs"]
+mod state;
 
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
-}
+use routes::*; 
+use state::AppState;
 
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
-}
-
-#[actix_web::main]
+#[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
+    // 애플리케이션 상태 초기화
+    let shared_data = web::Data::new(AppState {
+    });
+
+    // 웹 애플리케이션 정의 closure
+    let app = move || {
         App::new()
-            .service(hello)
-            .service(echo)
-            .route("/hey", web::get().to(manual_hello))
-    })
-    .bind(("127.0.0.1", 8080))?
-    .run()
-    .await
+            .app_data(shared_data.clone())
+            .configure(travel_time_routes)
+    };
+
+    HttpServer::new(app).bind("127.0.0.1:3000")?.run().await
 }
