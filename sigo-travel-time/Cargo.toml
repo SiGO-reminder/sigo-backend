@@ -1,0 +1,19 @@
+[package]
+name = "sigo-travel-time"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Actix 웹 프레임워크 및 런타임
+actix-web = "4"
+actix-rt = "2.10.0"
+actix-cors = "0.7.0"
+# Data 직렬화 라이브러리
+serde = {version = "1.0.217", features = ["derive"]}
+serde_json = "1.0.134"
+# 시간 관련 유틸리티
+chrono = {version = "0.4.39", features = ["serde"]}
+# HTTP client를 위한 라이브러리
+reqwest = { version = "0.12.12", features = ["json"] }
+# 환경변수 라이브러리 
+dotenv = "0.15.0"
