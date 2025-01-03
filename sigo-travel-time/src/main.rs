@@ -1,4 +1,5 @@
 use actix_web::{web, App, HttpServer};
+use actix_cors::Cors;
 use reqwest::Client;
 
 #[path = "handlers.rs"]
@@ -22,8 +23,10 @@ async fn main() -> std::io::Result<()> {
     let app = move || {
         App::new()
             .app_data(shared_data.clone()) // 상태 등록
+            .wrap(Cors::permissive().allowed_origin("http://127.0.0.1:8080")) // CORS 설정
             .configure(travel_time_routes)
     };
 
-    HttpServer::new(app).bind("127.0.0.1:3000")?.run().await
+    println!("Starting server at http://127.0.0.1:8080");
+    HttpServer::new(app).bind("127.0.0.1:8080")?.run().await
 }
