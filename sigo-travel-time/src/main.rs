@@ -1,5 +1,6 @@
-use actix_web::{web, App, HttpServer};
 use actix_cors::Cors;
+use actix_web::{web, App, HttpServer};
+use dotenv::dotenv;
 use reqwest::Client;
 
 #[path = "handlers.rs"]
@@ -18,6 +19,7 @@ use state::AppState;
 async fn main() -> std::io::Result<()> {
     let http_client = Client::new();
     let shared_data = web::Data::new(AppState { http_client }); // 애플리케이션 상태 초기화
+    dotenv().ok(); // .env 파일에서 환경변수 로드
 
     // 웹 애플리케이션 정의 closure
     let app = move || {

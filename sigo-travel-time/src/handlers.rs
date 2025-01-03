@@ -5,6 +5,7 @@ use super::models::TMAPtransitAPIInput;
 use super::state::AppState;
 use actix_web::{web, HttpResponse};
 use serde_json::Value;
+use std::env;
 // use chrono::Utc; // 등록 시간.
 
 // 대중교통을 이용했을 때 걸리는 시간을 받아오는 기능
@@ -15,6 +16,7 @@ pub async fn get_travel_time_by_transit(
 ) -> HttpResponse {
     let http_client = &app_state.http_client;
     let tmap_api_endpoint = "https://apis.openapi.sk.com/transit/routes";
+    let app_key = env::var("TMAP_API_KEY").expect("Failed to get TMAP_API_KEY in .env");
 
     let request_body = serde_json::json!({
         "startX": api_input_info.start_x,
@@ -29,7 +31,7 @@ pub async fn get_travel_time_by_transit(
     match http_client
         .post(tmap_api_endpoint)
         .header("content-type", "application/json")
-        .header("appKey", "환경변수 크레이트 추가하기")
+        .header("appKey", app_key)
         .header("accept", "application/json")
         .json(&request_body)
         .send()
