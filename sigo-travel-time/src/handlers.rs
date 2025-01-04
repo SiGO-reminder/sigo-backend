@@ -58,23 +58,26 @@ pub async fn get_travel_time_by_driving(
     app_state: web::Data<AppState>,
 ) -> HttpResponse {
     let http_client = &app_state.http_client;
-    let tmap_api_endpoint = "https://apis.openapi.sk.com/tmap/routes?version=1";
     let app_key = env::var("TMAP_API_KEY").expect("Failed to get TMAP_API_KEY in .env");
+    let tmap_api_endpoint = "https://apis.openapi.sk.com/tmap/routes?version=1";
 
+    // https://openapi.sk.com/products/detail?svcSeq=4&menuSeq=46#Body_Parameters
+    // 이 링크에서 각 Body Parameters 확인 !!
     let request_body = serde_json::json!({
         "startX": api_input_info.start_x,
         "startY": api_input_info.start_y,
         "endX": api_input_info.end_x,
         "endY": api_input_info.end_y,
-        "totalValue": 2 
+        "searchOption" : 0, // 경로 탐색 옵션, 0(기본값): 교통최적 + 추천
+        "trafficInfo" : "Y",    // 교통 정보 포함 여부, Y: 교통 정보를 포함
+        "carType": 0    // 톨게이트 요금에 대한 차종, 0(기본값): 미선택
     });
 
     match http_client
         .post(tmap_api_endpoint)
-        .header("Content-Type", "application/x-www-form-urlencoded")
+        .header("content-type", "application/json")
         .header("appKey", app_key)
         .header("accept", "application/json")
-        .header("Accept-Language", "ko")
         .json(&request_body)
         .send()
         .await
