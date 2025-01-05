@@ -11,31 +11,43 @@ export class NaverMapService {
   ) {}
 
   // 네이버 지도 API에서 주소의 좌표를 가져오는 함수
-  async getGeocode(address: string) {
+  async getCoordinatesFromKeyword(keyword: string): Promise<any> {
     // 환경 변수에서 네이버 API 키를 불러옴
-    const clientId = this.configService.get<string>('NAVER_CLIENT_ID');
-    const clientSecret = this.configService.get<string>('NAVER_CLIENT_SECRET');
+    const clientId = this.configService.get<string>('NAVER_CLIENT_SEARCHID');
+    const clientSecret = this.configService.get<string>('NAVER_CLIENT_SEARCHSECRET');
 
-    // 네이버 지도 API의 Geocode URL
-    const url = `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`;
+    // 네이버 지도 API의 장소 검색 URL
+    const url = `https://openapi.naver.com/v1/search/local.json`;
 
-    // API 요청 시 필요한 헤더
-    const headers = {
-      'X-NCP-APIGW-API-KEY-ID': clientId, // 클라이언트 ID
-      'X-NCP-APIGW-API-KEY': clientSecret, // 클라이언트 Secret
-    };
-
-    // 네이버 지도 API에 HTTP GET 요청을 보냄
+    // HTTP 요청 보내기
     const response$ = this.httpService.get(url, {
-      headers,
-      params: { query: address }, // 요청 파라미터에 주소(query)를 포함
-    });
+        headers: {
+          'X-Naver-Client-Id': clientId,
+          'X-Naver-Client-Secret': clientSecret,
+        },
+        params: {
+            query: keyword, // 검색 키워드
+            display: 4, // 결과 최대 4개만 반환
+          },
+      });
 
-    // RxJS Observable을 Promise로 변환하여 비동기 결과를 기다림
-    const response = await lastValueFrom(response$);
-    
-    // API 응답 데이터 반환
-    return response.data;
-  }
+      const response = await lastValueFrom(response$); // Observable을 Promise로 변환
+      const items = response.data.items; // 검색 결과 배열
+  
+      if (items.length === 0) {
+        throw new Error('해당 키워드에 대한 검색 결과가 없습니다.');
+      }
+  
+    // 상위 4개 결과를 필터링하여 필요한 정보만 반환
+    const topResults = items.slice(0, 4).map((item: any) => ({
+        name: item.title.replace(/<[^>]*>/g, ''), // HTML 태그 제거
+        address: item.address,
+        category: item.category,
+        x: item.mapx,
+        y: item.mapy,
+      }));
+  
+      return topResults;
+    }
 }
 

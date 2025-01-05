@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NaverMapModule } from './naver-map/naver-map.module';
 import { ConfigModule } from '@nestjs/config';
-import { TestMapController } from './test-map.controller';
 
 @Module({
   imports: [
@@ -12,7 +11,7 @@ import { TestMapController } from './test-map.controller';
     }),
     NaverMapModule
   ],
-  controllers: [AppController, TestMapController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
