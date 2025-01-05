@@ -1,7 +1,7 @@
 // sigo-travel-time/src/handlers.rs
 // 각 HTTP 요청을 수행하는 핸들러 함수들을 작성 (서비스)
 
-use super::models::TMAPtransitAPIInput;
+use super::models::{TMAPAPIInput, TMAPtransitAPIInput};
 use super::state::AppState;
 use actix_web::{web, HttpResponse};
 use serde_json::Value;
@@ -54,7 +54,7 @@ pub async fn get_travel_time_by_transit(
 }
 
 pub async fn get_travel_time_by_driving(
-    api_input_info: web::Json<TMAPtransitAPIInput>,
+    api_input_info: web::Json<TMAPAPIInput>,
     app_state: web::Data<AppState>,
 ) -> HttpResponse {
     let http_client = &app_state.http_client;
@@ -66,8 +66,10 @@ pub async fn get_travel_time_by_driving(
     let request_body = serde_json::json!({
         "startX": api_input_info.start_x,
         "startY": api_input_info.start_y,
+        "startName": api_input_info.start_name,
         "endX": api_input_info.end_x,
         "endY": api_input_info.end_y,
+        "endName": api_input_info.end_name,
         "searchOption" : 0, // 경로 탐색 옵션, 0(기본값): 교통최적 + 추천
         "trafficInfo" : "Y",    // 교통 정보 포함 여부, Y: 교통 정보를 포함
         "carType": 0    // 톨게이트 요금에 대한 차종, 0(기본값): 미선택
@@ -99,7 +101,7 @@ pub async fn get_travel_time_by_driving(
 }
 
 pub async fn get_travel_time_by_walking(
-    api_input_info: web::Json<TMAPtransitAPIInput>,
+    api_input_info: web::Json<TMAPAPIInput>,
     app_state: web::Data<AppState>,
 ) -> HttpResponse {
     let http_client = &app_state.http_client;
@@ -112,10 +114,10 @@ pub async fn get_travel_time_by_walking(
     let request_body = serde_json::json!({
         "startX": api_input_info.start_x,
         "startY": api_input_info.start_y,
-        "startName": "출발지",
+        "startName": api_input_info.start_name,
         "endX": api_input_info.end_x,
         "endY": api_input_info.end_y,
-        "endName": "도착지"
+        "endName": api_input_info.end_name
     });
 
     match http_client
