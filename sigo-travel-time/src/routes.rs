@@ -9,7 +9,8 @@ pub fn travel_time_routes(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope(&api_path)
             .route("/transit", web::post().to(get_travel_time_by_transit))
-            .route("/driving", web::post().to(get_travel_time_by_driving)),
+            .route("/driving", web::post().to(get_travel_time_by_driving))
+            .route("/walking", web::post().to(get_travel_time_by_walking)),
     );
     cfg.service(web::scope("/test").route("/", web::get().to(test_handler)));
 }
