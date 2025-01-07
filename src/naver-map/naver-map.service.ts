@@ -43,8 +43,8 @@ export class NaverMapService {
         name: item.title.replace(/<[^>]*>/g, ''), // HTML 태그 제거
         address: item.address,
         category: item.category,
-        x: item.mapx,
-        y: item.mapy,
+        x: parseFloat(`${item.mapx}`.slice(0, -7) + '.' + `${item.mapx}`.slice(-7)),
+        y: parseFloat(`${item.mapy}`.slice(0, -7) + '.' + `${item.mapy}`.slice(-7)),
       }));
   
       return topResults;
