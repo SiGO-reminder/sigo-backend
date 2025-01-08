@@ -5,29 +5,6 @@ import { NaverMapService } from './naver-map.service'; // 서비스 연결
 export class NaverMapController {
   constructor(private readonly naverMapService: NaverMapService) {} // 서비스 주입
 
-  // GET 요청: 쿼리 파라미터를 통해 장소명을 전달받아 좌표를 반환
-  @Get('/search') 
-  async searchPlace(@Query('address') address: string) {
-    if (!address) {
-      return { 
-        message: '주소를 입력하세요! 😊',
-        example: 'http://localhost:3000/naver-map/geocode?address=서울시청',
-      };
-    }
-    try {
-      const result = await this.naverMapService.getCoordinatesFromKeyword(address);
-      return { 
-        message: '장소 정보를 성공적으로 가져왔어요!', 
-        data: result,
-      };
-    } catch (error) {
-      return { 
-        message: '오류가 발생했어요 😢', 
-        error: error.message,
-      };
-    }
-  }
-
   // POST 요청: JSON 형식으로 장소명을 전달받아 좌표를 반환
   @Post('/search') 
   async postCoordinatesFromKeyword(@Body('address') address: string) {
