@@ -6,7 +6,7 @@
 
 ### 개발 완료된 API endpoint 목록
 
-- POST http://localhost:3000/naver-map/search?
+- POST http://localhost:3000/api/v0/naver-map/search
   ```json
   { "address": "서울시청" }
   ```
@@ -50,8 +50,8 @@
 ### 1. 프로젝트 clone
 
 ```bash
-$ git clone https://github.com/SiGO-reminder/sigo-backend.git
-$ cd sigo-backend
+git clone https://github.com/SiGO-reminder/sigo-backend.git
+cd sigo-backend
 ```
 
 이 Repository를 로컬 환경에 clone한다.
@@ -61,14 +61,14 @@ $ cd sigo-backend
 - 2-1. nestjs 서버 의존성 설치
 
 ```bash
-$ npm install
+npm install
 ```
 
 - 2-2. rust 서버 의존성 설치
 
 ```bash
-$ cd sigo-travel-time
-$ cargo build
+cd sigo-travel-time
+cargo build
 ```
 
 ### 3. .env 파일(환경변수 설정)
@@ -76,7 +76,7 @@ $ cargo build
 두 서버의 directory root에서 .env 파일을 생성하고, 필요한 환경변수를 추가해 준다.
 
 ```bash
-$ touch .env
+touch .env
 # 각 파일 내에 필요한 환경변수 입력
 ```
 
@@ -87,13 +87,13 @@ $ touch .env
 - 4-1. nestjs 서버
 
 ```bash
-$ npm run start
+npm run start
 ```
 
 - 4-2. rust 서버
 
 ```bash
-$ cargo run
+cargo run
 ```
 
 ### 5. API request & response 확인
