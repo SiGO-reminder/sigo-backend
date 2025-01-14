@@ -1,51 +1,107 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# SiGO-backend: 시고 API 서버
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 📃 Description
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+시고 프로젝트에서 개발중인 API 통신 서버
 
-## Description
+### 개발 완료된 API endpoint 목록
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- POST http://localhost:3000/api/v0/naver-map/search
+  ```json
+  { "address": "서울시청" }
+  ```
+- POST http://localhost:8080/api/v0/travel-time/transit
+  ```json
+  {
+    "start_x": "127.02961696519651",
+    "start_y": "37.58276551823443",
+    "end_x": "127.0540211996305",
+    "end_y": "37.58388311414532"
+  }
+  ```
+- POST http://localhost:8080/api/v0/travel-time/driving
+  ```json
+  {
+    "start_x": "127.02961696519651",
+    "start_y": "37.58276551823443",
+    "start_name": "안암오거리",
+    "end_x": "127.0540211996305",
+    "end_y": "37.58388311414532",
+    "end_name": "해머스미스커피 서울시립대점"
+  }
+  ```
+- POST http://localhost:8080/api/v0/travel-time/walking
+  ```json
+  {
+    "start_x": "127.02961696519651",
+    "start_y": "37.58276551823443",
+    "start_name": "안암오거리",
+    "end_x": "127.0540211996305",
+    "end_y": "37.58388311414532",
+    "end_name": "해머스미스커피 서울시립대점"
+  }
+  ```
 
-## Project setup
+## ✅ Project setup
+
+개발 과정에서 서버를 두 곳으로 따로 분리해 개발을 진행하였으므로, 터미널을 두 개 열어 진행하도록 한다.
+앞으로, 두 가지 서버는 각각 nestjs 서버 `/`, rust 서버 `/sigo-travel-time` 로 명명하도록 하겠다.
+
+### 1. 프로젝트 clone
 
 ```bash
-$ npm install
+git clone https://github.com/SiGO-reminder/sigo-backend.git
+cd sigo-backend
 ```
 
-## Compile and run the project
+이 Repository를 로컬 환경에 clone한다.
+
+### 2. 의존성 설치
+
+- 2-1. nestjs 서버 의존성 설치
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+- 2-2. rust 서버 의존성 설치
+
+```bash
+cd sigo-travel-time
+cargo build
+```
+
+### 3. .env 파일(환경변수 설정)
+
+두 서버의 directory root에서 .env 파일을 생성하고, 필요한 환경변수를 추가해 준다.
+
+```bash
+touch .env
+# 각 파일 내에 필요한 환경변수 입력
+```
+
+### 4. 서버 실행
+
+두 서버를 실행시킨다.
+
+- 4-1. nestjs 서버
+
+```bash
+npm run start
+```
+
+- 4-2. rust 서버
+
+```bash
+cargo run
+```
+
+### 5. API request & response 확인
+
+- [위](#개발-완료된-api-endpoint-목록)에서 언급한 API 엔드포인트 목록 참고.
+- curl, postman 등의 툴을 활용해서 테스트 해보세요 ~
+
+## 🧪 Run tests (테스트 코드 추후 추가 예정)
 
 ```bash
 # unit tests
@@ -58,16 +114,11 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
 ```bash
-$ npm install -g mau
-$ mau deploy
+$ cargo test
 ```
+
+## Deployment (TBC)
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
