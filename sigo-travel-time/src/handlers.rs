@@ -167,5 +167,10 @@ pub async fn get_travel_time_by_walking(
 }
 
 pub async fn test_handler() -> HttpResponse {
-    HttpResponse::Ok().body("Test handler called")
+    let should_alarm_ring = true;
+    let res_json = serde_json::json!({
+        "should_alarm_ring": should_alarm_ring
+    });
+
+    HttpResponse::Ok().json(res_json)
 }
