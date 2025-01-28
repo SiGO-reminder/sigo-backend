@@ -1,6 +1,6 @@
 // src/models/mod.rs
 
-mod api_main;
-pub use api_main::*;
-mod tmap_driving;
-pub use tmap_driving::*;
+mod api_main_model;
+pub use api_main_model::*;
+mod tmap_driving_response_model;
+pub use tmap_driving_response_model::*;
