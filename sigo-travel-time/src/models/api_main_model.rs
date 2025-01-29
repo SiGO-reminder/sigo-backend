@@ -2,7 +2,7 @@
 // 웹 서비스 데이터 모델 Rust 구조체 정의 (DTO)
 
 use actix_web::web;
-use chrono::{DateTime, Utc};
+// use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -11,7 +11,7 @@ pub struct RequestBody {
     pub start_y: String,
     pub end_x: String,
     pub end_y: String,
-    pub alarm_time: DateTime<Utc>,
+    pub alarm_time: String,
     pub preparation_time: i64,
 }
 
@@ -22,6 +22,18 @@ pub struct TMAPAPIInput {
     pub start_y: String,
     pub end_x: String,
     pub end_y: String,
+}
+
+// 생성자 함수
+impl TMAPAPIInput {
+    pub fn new(start_x: String, start_y: String, end_x: String, end_y: String) -> Self {
+        TMAPAPIInput {
+            start_x,
+            start_y,
+            end_x,
+            end_y,
+        }
+    }
 }
 
 // HTTP request 데이터를 Rust 구조체로 변환.
