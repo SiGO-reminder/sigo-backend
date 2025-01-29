@@ -21,7 +21,7 @@ pub async fn time_comparison(
         req.end_x.clone(),
         req.end_y.clone(),
     );
-    let total_time_res = get_travel_time(tmap_api_input, app_state, query).await;
+    let total_time_res = _get_total_time(tmap_api_input, app_state, query).await;
     let total_time_sec = match total_time_res {
         Ok(sec) => sec, // Ok -> sec의 i64 값을 total_time_sec으로 저장
         Err(http_response) => return http_response, // 에러 발생할 시 즉시 반환
@@ -70,7 +70,7 @@ pub async fn time_comparison(
     }
 }
 
-pub async fn get_travel_time(
+async fn _get_total_time(
     api_input_info: TMAPAPIInput,
     app_state: web::Data<AppState>,
     query: web::Query<Transport>,
@@ -79,16 +79,16 @@ pub async fn get_travel_time(
 
     match transport.as_str() {
         "driving" => {
-            let response = get_travel_time_by_driving(api_input_info, app_state).await?;
+            let response = _get_travel_time_by_driving(api_input_info, app_state).await?;
             Ok(response.features[0].properties.total_time as i64)
         }
         "transit" => {
-            let response = get_travel_time_by_transit(api_input_info, app_state).await?;
+            let response = _get_travel_time_by_transit(api_input_info, app_state).await?;
             let total_time = response.get_total_time().unwrap_or(0);
             Ok(total_time)
         }
         "walking" => {
-            let response = get_travel_time_by_walking(api_input_info, app_state).await?;
+            let response = _get_travel_time_by_walking(api_input_info, app_state).await?;
             let total_time = response.get_total_time().unwrap_or(0); // 기본값 0
             Ok(total_time)
         }
@@ -98,7 +98,7 @@ pub async fn get_travel_time(
 
 // 대중교통을 이용했을 때 걸리는 시간을 받아오는 기능
 // TMAP 대중교통 API 활용
-pub async fn get_travel_time_by_transit(
+async fn _get_travel_time_by_transit(
     api_input_info: TMAPAPIInput,
     app_state: web::Data<AppState>,
 ) -> Result<TmapTransitResponse, HttpResponse> {
@@ -144,7 +144,7 @@ pub async fn get_travel_time_by_transit(
     }
 }
 
-pub async fn get_travel_time_by_driving(
+async fn _get_travel_time_by_driving(
     api_input_info: TMAPAPIInput,
     app_state: web::Data<AppState>,
 ) -> Result<TmapDrivingResponse, HttpResponse> {
@@ -191,7 +191,7 @@ pub async fn get_travel_time_by_driving(
     }
 }
 
-pub async fn get_travel_time_by_walking(
+async fn _get_travel_time_by_walking(
     api_input_info: TMAPAPIInput,
     app_state: web::Data<AppState>,
 ) -> Result<TmapWalkingResponse, HttpResponse> {
