@@ -48,6 +48,7 @@ pub async fn time_comparison(
         "required_time: {:?}, remaining_time: {:?}",
         required_time, remaining_time
     );
+    println!();
 
     if remaining_time <= required_time {
         should_alarm_ring = true;
@@ -133,7 +134,7 @@ async fn _get_travel_time_by_transit(
                 let tmap_transit_response =
                     TmapTransitResponse::from_json(json_response).map_err(|_| {
                         HttpResponse::InternalServerError()
-                            .body("Failed to parse TmapDrivingResponse")
+                            .body("Failed to parse TmapTransitResponse")
                     })?;
                 Ok(tmap_transit_response)
             } else {
@@ -228,7 +229,7 @@ async fn _get_travel_time_by_walking(
                 let tmap_walking_response =
                     TmapWalkingResponse::from_json(json_response).map_err(|_| {
                         HttpResponse::InternalServerError()
-                            .body("Failed to parse TmapDrivingResponse")
+                            .body("Failed to parse TmapWalkingResponse")
                     })?;
                 Ok(tmap_walking_response)
             } else {

@@ -281,6 +281,7 @@ use serde_json::Value;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TmapTransitResponse {
+    #[serde(rename = "metaData")]
     pub meta_data: MetaData,
 }
 
@@ -297,7 +298,7 @@ pub struct Plan {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Itinerary {
     #[serde(rename = "totalTime")]
-    pub total_time: u32,
+    pub total_time: Option<u32>,
 }
 
 impl TmapTransitResponse {
@@ -308,7 +309,9 @@ impl TmapTransitResponse {
 
     pub fn get_total_time(&self) -> Option<i64> {
         for itinerary in &self.meta_data.plan.itineraries {
-            return Some(itinerary.total_time as i64);
+            if let Some(total_time) = itinerary.total_time {
+                return Some(total_time as i64);
+            }
         }
         None
     }

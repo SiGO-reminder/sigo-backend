@@ -1,6 +1,3 @@
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
-
 // TMAP Driving API - 응답 본문 구조
 // {
 //   "type": "FeatureCollection",
@@ -17,9 +14,11 @@ use serde_json::Value;
 //   ]
 // }
 
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TmapDrivingResponse {
-    pub response_type: String,
     pub features: Vec<Feature>,
 }
 

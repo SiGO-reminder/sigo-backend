@@ -42,6 +42,17 @@ pub struct TmapWalkingResponse {
     pub features: Vec<Feature>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Feature {
+    pub properties: Properties,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Properties {
+    #[serde(rename = "totalTime")]
+    pub total_time: Option<u32>, // totalTime만 포함
+}
+
 impl TmapWalkingResponse {
     pub fn from_json(json_response: Value) -> Result<Self, serde_json::Error> {
         let tmap_walking_response: TmapWalkingResponse = serde_json::from_value(json_response)?;
@@ -50,43 +61,10 @@ impl TmapWalkingResponse {
 
     pub fn get_total_time(&self) -> Option<i64> {
         for feature in &self.features {
-            if feature.properties.point_type == "SP" {
-                return Some(feature.properties.total_time as i64);
+            if feature.properties.total_time.is_some() {
+                return feature.properties.total_time.map(|t| t as i64);
             }
         }
         None
     }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Feature {
-    #[serde(rename = "type")]
-    pub feature_type: String,
-    pub geometry: Geometry,
-    pub properties: Properties,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Geometry {
-    pub coordinates: Vec<f64>,
-    pub feature_type: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Properties {
-    pub description: String,
-    pub direction: String,
-    pub facility_name: String,
-    pub facility_type: String,
-    pub index: u32,
-    pub intersection_name: String,
-    pub name: String,
-    pub near_poi_name: String,
-    pub near_poi_x: String,
-    pub near_poi_y: String,
-    pub point_index: u32,
-    pub point_type: String,
-    pub total_distance: u32,
-    pub total_time: u32,
-    pub turn_type: u32,
 }
