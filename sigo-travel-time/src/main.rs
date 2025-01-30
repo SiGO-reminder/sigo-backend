@@ -5,8 +5,7 @@ use reqwest::Client;
 
 #[path = "handlers.rs"]
 mod handlers;
-#[path = "models.rs"]
-mod models;
+pub mod models; // 모델을 디렉토리로 변경해서 관리
 #[path = "routes.rs"]
 mod routes;
 #[path = "state.rs"]
